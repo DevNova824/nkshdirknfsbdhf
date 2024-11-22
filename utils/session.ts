@@ -18,8 +18,7 @@ import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
 const key = new TextEncoder().encode(process.env.JWT_SECRET)
-
-export const SESSION_DURATION = 3 * 60 * 60 * 1000 // 3 hours
+export const SESSION_DURATION = 3 * 60 * 60 * 1000
 
 export async function encrypt(payload: any) {
     return await new SignJWT(payload)
@@ -38,24 +37,32 @@ export async function decrypt(input: string): Promise<any> {
 
 export async function getSession() {
     const session = cookies().get("session")?.value
-    console.log("Session value in getSession ", session)
     if (!session) return null
-    return await decrypt(session)
+    try {
+        return await decrypt(session)
+    } catch {
+        return null
+    }
 }
 
 export async function updateSession(request: NextRequest) {
     const session = request.cookies.get("session")?.value
     if (!session) return
 
-    // Refresh the session so it doesn't expire
     const parsed = await decrypt(session)
     parsed.expires = new Date(Date.now() + SESSION_DURATION)
     const res = NextResponse.next()
+
     res.cookies.set({
         name: "session",
         value: await encrypt(parsed),
         httpOnly: true,
         expires: parsed.expires,
+        sameSite: "none",
+        secure: true,
+        path: '/',
+        domain: process.env.NEXT_PUBLIC_DOMAIN || undefined
     })
+
     return res
 }
