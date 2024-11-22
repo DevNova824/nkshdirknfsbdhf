@@ -51,6 +51,7 @@ export async function updateSession(request: NextRequest) {
 
     const parsed = await decrypt(session)
     parsed.expires = new Date(Date.now() + SESSION_DURATION)
+
     const res = NextResponse.next()
 
     res.cookies.set({
@@ -61,7 +62,6 @@ export async function updateSession(request: NextRequest) {
         sameSite: "none",
         secure: true,
         path: '/',
-        domain: process.env.NEXT_PUBLIC_DOMAIN || undefined
     })
 
     return res
