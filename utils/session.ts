@@ -67,6 +67,13 @@ export async function updateSession(request: NextRequest) {
     return res
 }
 
+export async function getAllCookies() {
+    const cookieStore = cookies();
+    const allCookies = cookieStore.getAll();
+    console.log("All cookies:", allCookies);
+    return allCookies;
+}
+
 export async function getTelegramSession() {
     const session = cookies().get("telegram.initParams")?.value
     if (!session) return null
