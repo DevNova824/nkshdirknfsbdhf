@@ -15,7 +15,7 @@
 
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getAllCookies, getSession, getTelegramSession, updateSession } from './utils/session'
+import { getSession, updateSession } from './utils/session'
 
 export async function middleware(request: NextRequest) {
     // Allow authentication endpoints without session check
@@ -27,9 +27,6 @@ export async function middleware(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/api')) {
         try {
             const session = await getSession()
-            await getAllCookies()
-            const telegramSession = await getTelegramSession()
-            console.log("Telegram session", telegramSession)
             if (!session) {
                 return new NextResponse(
                     JSON.stringify({ error: 'Unauthorized' }),

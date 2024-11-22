@@ -78,7 +78,6 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       if (process.env.NEXT_PUBLIC_BYPASS_TELEGRAM_AUTH === 'true') {
         initData = "temp";
       }
-      console.log("Cookies in iframe:", document.cookie);
       await authenticateUser(initData);
       const response = await fetch('/api/user', {
         method: 'POST',
