@@ -13,56 +13,49 @@
  * GitHub: https://github.com/nikandr-surkov
  */
 
-import { jwtVerify, SignJWT } from 'jose';
-import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify, SignJWT } from 'jose'
+import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
 
-const key = new TextEncoder().encode(process.env.JWT_SECRET);
+const key = new TextEncoder().encode(process.env.JWT_SECRET)
 
-export const SESSION_DURATION = 3 * 60 * 60 * 1000; // 3 hours
+export const SESSION_DURATION = 3 * 60 * 60 * 1000 // 3 hours
 
 export async function encrypt(payload: any) {
     return await new SignJWT(payload)
-        .setProtectedHeader({ alg: 'HS256' })
+        .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime('3 hours')
-        .sign(key);
+        .setExpirationTime("3 hours")
+        .sign(key)
 }
 
 export async function decrypt(input: string): Promise<any> {
     const { payload } = await jwtVerify(input, key, {
-        algorithms: ['HS256'],
-    });
-    return payload;
+        algorithms: ["HS256"],
+    })
+    return payload
 }
 
 export async function getSession() {
-    const session = cookies().get('session')?.value;
-    console.log('Session value in getSession: ', session);
-    if (!session) return null;
-    return await decrypt(session);
+    const session = cookies().get("session")?.value
+    console.log("Session value in getSession ", session)
+    if (!session) return null
+    return await decrypt(session)
 }
 
 export async function updateSession(request: NextRequest) {
-    const session = request.cookies.get('session')?.value;
-    if (!session) return;
+    const session = request.cookies.get("session")?.value
+    if (!session) return
 
-    // Refresh the session to extend expiration
-    const parsed = await decrypt(session);
-    parsed.expires = new Date(Date.now() + SESSION_DURATION);
-
-    const res = NextResponse.next();
-
-    // Updated cookie settings
+    // Refresh the session so it doesn't expire
+    const parsed = await decrypt(session)
+    parsed.expires = new Date(Date.now() + SESSION_DURATION)
+    const res = NextResponse.next()
     res.cookies.set({
-        name: 'session',
+        name: "session",
         value: await encrypt(parsed),
         httpOnly: true,
-        secure: true,                 // Required for HTTPS
-        sameSite: 'none',             // Required for iframe environments
-        path: '/',                    // Set to root path
-        expires: parsed.expires,      // Set expiration
-    });
-
-    return res;
+        expires: parsed.expires,
+    })
+    return res
 }
