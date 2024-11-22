@@ -68,7 +68,7 @@ export async function updateSession(request: NextRequest) {
 }
 
 export async function getTelegramSession() {
-    const session = cookies().get("__telegram__initParams")?.value
+    const session = cookies().get("telegram.initParams")?.value
     if (!session) return null
     try {
         return session
