@@ -228,14 +228,14 @@ export default function Airdrop() {
                                 <h2 className="text-base mt-8 mb-4">Wallet</h2>
 
                                 {isProcessingWallet ? (
-                                    <div className="flex justify-between items-center bg-[#272a2f] rounded-lg p-4 w-full">
+                                    <div className="flex justify-between items-center bg-[#272a2f] rounded-lg p-4 w-full animate-pulse">
                                         <div className="flex items-center">
-                                            <div className="w-10 h-10 bg-gray-300 rounded-lg animate-pulse mr-2"></div>
+                                            <div className="w-10 h-10 bg-gray-300 rounded-lg mr-2"></div>
                                             <div className="flex flex-col">
-                                                <div className="w-32 h-4 bg-gray-300 rounded animate-pulse"></div>
+                                                <div className="w-32 h-4 bg-gray-300 rounded"></div>
                                             </div>
                                         </div>
-                                        <div className="w-20 h-8 bg-gray-300 rounded animate-pulse"></div>
+                                        <div className="w-20 h-8 bg-gray-300 rounded"></div>
                                     </div>
                                 ) : !tonWalletAddress ? (
                                     <button
@@ -278,10 +278,10 @@ export default function Airdrop() {
                                     </div>
                                 )}
                                 <h2 className="text-base mt-8 mb-4">Tasks</h2>
-                                <div className="space-y-2">
-                                    {
-                                        isLoadingTasks ?
-                                            (
+                                {
+                                    isLoadingTasks ?
+                                        (<div className="space-y-2 animate-pulse">
+                                            {
                                                 [...Array(3)].map((_, index) => (
                                                     <div
                                                         key={index}
@@ -300,53 +300,59 @@ export default function Airdrop() {
                                                         <div className="w-16 h-4 bg-gray-700 rounded animate-pulse" />
                                                     </div>
                                                 ))
-                                            )
-                                            :
-                                            (
-                                                onchainTasks.map((task) => (
-                                                    <button
-                                                        key={task.id}
-                                                        className="w-full flex justify-between items-center bg-[#272a2f] rounded-lg p-4"
-                                                        onClick={() => handleOnchainTaskClick(task)}
-                                                    >
-                                                        <div className="flex items-center">
-                                                            <Image
-                                                                src={task.collectionMetadata.image}
-                                                                alt={task.collectionMetadata.name}
-                                                                width={40}
-                                                                height={40}
-                                                                className="rounded-lg mr-2"
-                                                            />
-                                                            <div className="flex flex-col">
-                                                                <span className="font-medium">{task.collectionMetadata.name}</span>
-                                                                <div className="flex items-center">
-                                                                    <IceCube className="w-6 h-6 mr-1" />
-                                                                    <span className="text-white">+{task.points}</span>
+                                            }
+                                        </div>
+                                        )
+                                        :
+                                        (
+                                            <div className="space-y-2">
+                                                {
+
+                                                    onchainTasks.map((task) => (
+                                                        <button
+                                                            key={task.id}
+                                                            className="w-full flex justify-between items-center bg-[#272a2f] rounded-lg p-4"
+                                                            onClick={() => handleOnchainTaskClick(task)}
+                                                        >
+                                                            <div className="flex items-center">
+                                                                <Image
+                                                                    src={task.collectionMetadata.image}
+                                                                    alt={task.collectionMetadata.name}
+                                                                    width={40}
+                                                                    height={40}
+                                                                    className="rounded-lg mr-2"
+                                                                />
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-medium">{task.collectionMetadata.name}</span>
+                                                                    <div className="flex items-center">
+                                                                        <IceCube className="w-6 h-6 mr-1" />
+                                                                        <span className="text-white">+{task.points}</span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        {task.isCompleted ? (
-                                                            <svg
-                                                                className="w-6 h-6 text-green-500"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                viewBox="0 0 24 24"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                            >
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={2}
-                                                                    d="M5 13l4 4L19 7"
-                                                                />
-                                                            </svg>
-                                                        ) : (
-                                                            <span>{formatTON(task.price)} TON</span>
-                                                        )}
-                                                    </button>
-                                                ))
-                                            )}
-                                </div>
+                                                            {task.isCompleted ? (
+                                                                <svg
+                                                                    className="w-6 h-6 text-green-500"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth={2}
+                                                                        d="M5 13l4 4L19 7"
+                                                                    />
+                                                                </svg>
+                                                            ) : (
+                                                                <span>{formatTON(task.price)} TON</span>
+                                                            )}
+                                                        </button>
+                                                    ))
+                                                }
+                                            </div>)
+                                }
                             </div>
                         </div>
                     </div>

@@ -18,17 +18,8 @@ import type { NextRequest } from 'next/server'
 import { getSession, updateSession } from './utils/session'
 
 export async function middleware(request: NextRequest) {
-    const url = request.nextUrl;
-    const initData = url.searchParams.get('initData');
-    console.log("Middleware init data: ", initData);
-
-    // Allow authentication endpoints without session check
-    if (request.nextUrl.pathname === '/api/auth') {
-        return NextResponse.next()
-    }
-
-    // Handle API routes
-    if (request.nextUrl.pathname.startsWith('/api')) {
+    // Handle admin API routes
+    if (request.nextUrl.pathname.startsWith('/api/admin')) {
         try {
             const session = await getSession()
             if (!session) {

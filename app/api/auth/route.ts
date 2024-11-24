@@ -19,6 +19,12 @@ import { validateTelegramWebAppData } from '@/utils/server-checks'
 import { encrypt, SESSION_DURATION } from '@/utils/session'
 
 export async function POST(request: Request) {
+    const isLocalhost = request.headers.get('host')?.includes('localhost');
+    const isAdminAccessEnabled = process.env.ACCESS_ADMIN === 'true';
+
+    if (!isLocalhost || !isAdminAccessEnabled) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
     try {
         const { initData } = await request.json()
 
@@ -34,7 +40,7 @@ export async function POST(request: Request) {
         const { message, validatedData, user } = validateTelegramWebAppData(initData)
 
         console.log("Message", message)
-        
+
         if (!validatedData) {
             console.error('Telegram validation failed for initData:', initData)
             return NextResponse.json(

@@ -36,6 +36,10 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
   const [isAppropriateDevice, setIsAppropriateDevice] = useState(true);
 
   const authenticateUser = async (initData: string | undefined) => {
+    const isLocalhost =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    if (isLocalhost) return;
     if (initData) {
       try {
         const response = await fetch('/api/auth', {
@@ -64,6 +68,9 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       if (typeof window !== 'undefined') {
         const WebApp = (await import('@twa-dev/sdk')).default;
         WebApp.ready();
+        WebApp.bottomBarColor = "#ff0000";
+        WebApp.enableVerticalSwipes();
+        WebApp.expand();
         initData = WebApp.initData;
         telegramId = WebApp.initDataUnsafe.user?.id.toString();
         username = WebApp.initDataUnsafe.user?.username || 'Unknown User';
