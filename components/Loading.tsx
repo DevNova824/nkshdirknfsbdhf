@@ -68,7 +68,8 @@ export default function Loading({ setIsInitialized, setCurrentView }: LoadingPro
       if (typeof window !== 'undefined') {
         const WebApp = (await import('@twa-dev/sdk')).default;
         WebApp.ready();
-        WebApp.bottomBarColor = "#ff0000";
+        WebApp.bottomBarColor = "#1d2025";
+        WebApp.headerColor = "#000000";
         WebApp.enableVerticalSwipes();
         WebApp.expand();
         initData = WebApp.initData;
